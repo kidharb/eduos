@@ -9,5 +9,5 @@ set(CMAKE_C_FLAGS_DEBUG   "-g -O0 -DDEBUG")
 set(CMAKE_CXX_FLAGS       "-Wno-gnu-folding-constant")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG")
 
-set(subproject "helper_targets" CACHE STRING "Sub-project to build, valid are toolchain, sysroot and lf_os")
+set(subproject "uefi" CACHE STRING "Sub-project to build, valid are toolchain, sysroot and lf_os")
 include(${subproject})
