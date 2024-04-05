@@ -61,7 +61,7 @@ override CFLAGS += \
 
 # Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
-    -I src \
+    -I kernel \
     $(CPPFLAGS) \
     -MMD \
     -MP
@@ -84,9 +84,9 @@ override NASMFLAGS += \
 
 # Use "find" to glob all *.c, *.S, and *.asm files in the tree and obtain the
 # object and header dependency file names.
-override CFILES := $(shell cd src && find -L * -type f -name '*.c')
-override ASFILES := $(shell cd src && find -L * -type f -name '*.S')
-override NASMFILES := $(shell cd src && find -L * -type f -name '*.asm')
+override CFILES := $(shell cd kernel && find -L * -type f -name '*.c')
+override ASFILES := $(shell cd kernel && find -L * -type f -name '*.S')
+override NASMFILES := $(shell cd kernel && find -L * -type f -name '*.asm')
 override OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILES:.asm=.asm.o))
 override HEADER_DEPS := $(addprefix obj/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 
@@ -94,7 +94,7 @@ override HEADER_DEPS := $(addprefix obj/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 .PHONY: all
 all: bin/$(KERNEL)
 
-src/limine.h:
+kernel/limine.h:
 	curl -Lo $@ https://github.com/limine-bootloader/limine/raw/trunk/limine.h
 
 # Link rules for the final kernel executable.
@@ -106,17 +106,17 @@ bin/$(KERNEL): GNUmakefile linker.ld $(OBJ)
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
-obj/%.c.o: src/%.c GNUmakefile src/limine.h
+obj/%.c.o: kernel/%.c GNUmakefile kernel/limine.h
 	mkdir -p "$$(dirname $@)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.S files.
-obj/%.S.o: src/%.S GNUmakefile
+obj/%.S.o: kernel/%.S GNUmakefile
 	mkdir -p "$$(dirname $@)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.asm (nasm) files.
-obj/%.asm.o: src/%.asm GNUmakefile
+obj/%.asm.o: kernel/%.asm GNUmakefile
 	mkdir -p "$$(dirname $@)"
 	nasm $(NASMFLAGS) $< -o $@
 
@@ -127,4 +127,4 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	rm -f src/limine.h
+	rm -f kernel/limine.h
