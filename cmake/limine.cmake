@@ -1,14 +1,25 @@
-add_custom_command(
-    OUTPUT firmware.qcow2
-    COMMAND ${qemu_img} create -o backing_file=${ovmf_firmware} -o backing_fmt=raw -o cluster_size=512 -f qcow2 firmware.qcow2
-    DEPENDS ${ovmf_firmware}
-)
-
-add_custom_target(ovmf
-    COMMAND mkdir -p ovmf
-	COMMAND cd ovmf && curl -Lo OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
-    USES_TERMINAL
-)
+#add_custom_command(
+#    OUTPUT firmware.qcow2
+#    COMMAND ${qemu_img} create -o backing_file=${ovmf_firmware} -o backing_fmt=raw -o cluster_size=512 -f qcow2 firmware.qcow2
+#    DEPENDS ${ovmf_firmware}
+#)
+#
+#add_custom_target(ovmf
+#    COMMAND mkdir -p ovmf
+#	COMMAND cd ovmf && curl -Lo OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
+#    USES_TERMINAL
+#)
+#
+#add_custom_target(limine
+#	COMMAND git clone https://github.com/limine-bootloader/limine.git --branch=v7.x-binary --depth=1
+#	COMMAND make -C limine \
+#		CC="$(HOST_CC)" \
+#		CFLAGS="$(HOST_CFLAGS)" \
+#		CPPFLAGS="$(HOST_CPPFLAGS)" \
+#		LDFLAGS="$(HOST_LDFLAGS)" \
+#		LIBS="$(HOST_LIBS)"
+#    USES_TERMINAL
+#)
 
 
 #.PHONY: all
@@ -33,15 +44,6 @@ add_custom_target(ovmf
 #run-hdd-uefi: ovmf $(IMAGE_NAME).hdd
 #	qemu-system-x86_64 -M q35 -m 2G -bios ovmf/OVMF.fd -hda $(IMAGE_NAME).hdd
 #
-#
-#limine:
-#	git clone https://github.com/limine-bootloader/limine.git --branch=v7.x-binary --depth=1
-#	$(MAKE) -C limine \
-#		CC="$(HOST_CC)" \
-#		CFLAGS="$(HOST_CFLAGS)" \
-#		CPPFLAGS="$(HOST_CPPFLAGS)" \
-#		LDFLAGS="$(HOST_LDFLAGS)" \
-#		LIBS="$(HOST_LIBS)"
 #
 #.PHONY: kernel
 #kernel:
